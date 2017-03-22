@@ -1,7 +1,7 @@
 {
-  "name": "api-ai-javascript",
-  "version": "2.0.0-beta.19",
-  "description": "Javascript SDK for https://api.ai/",
+  "name": "@faithlife/api-ai",
+  "version": "0.0.1",
+  "description": "Faithlife's modified Javascript SDK for https://api.ai/",
   "main": "index",
   "dependencies": {
     "@types/webaudioapi": "0.0.27"
@@ -39,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/api-ai/api-ai-javascript.git"
+    "url": "git+https://github.com/Faithlife/api-ai-javascript.git"
   },
   "keywords": [
     "api.ai",
@@ -49,12 +49,12 @@
     "conversational",
     "UX"
   ],
-  "author": "Eugeny Shingarev",
-  "license": "Apache-2.0",
+  "author": "Faithlife Corporation",
+  "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/api-ai/api-ai-javascript/issues"
+    "url": "https://github.com/Faithlife/api-ai-javascript/issues"
   },
-  "homepage": "https://github.com/api-ai/api-ai-javascript#readme",
+  "homepage": "https://github.com/Faithlife/api-ai-javascript#readme",
   "eslintConfig": {
     "extends": "google"
   }
