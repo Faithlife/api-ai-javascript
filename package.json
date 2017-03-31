@@ -2,7 +2,7 @@
   "name": "@faithlife/api-ai",
   "version": "0.0.2",
   "description": "Faithlife's modified Javascript SDK for https://api.ai/",
-  "main": "index",
+  "main": "dist/index.js",
   "devDependencies": {
     "@types/es6-promise": "0.0.32",
     "@types/webaudioapi": "0.0.27",
@@ -20,8 +20,11 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "webpack && webpack --env.streamless && webpack --env.compress && webpack --env.streamless --env.compress && rimraf ./es6 && tsc -p ./tsconfig.es6.json"
+    "build": "rimraf dist && webpack && tsc -p ./tsconfig.es6.json"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Faithlife/api-ai-javascript.git"

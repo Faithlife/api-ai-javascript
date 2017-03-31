@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "outDir": "es6",
+    "outDir": "dist/es6",
     "sourceMap": false,
     "typeRoots": ["node_modules/@types/"],
     "types": ["webaudioapi"],
     "declaration": false
   },
   "files": [
-    "declarations.d.ts",
-    "ts/_build.ts"
+    "ts/declarations.d.ts",
+    "ts/index.ts"
   ]
 }

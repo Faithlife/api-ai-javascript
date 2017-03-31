@@ -3,7 +3,6 @@
 api-ai-javascript.iml
 npm-debug.log
 node_modules
-target
-es6
+dist
 .DS_Store
 demo/.DS_Store
