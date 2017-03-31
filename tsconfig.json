@@ -6,6 +6,6 @@
     "types": ["es6-promise", "webaudioapi"]
   },
   "files": [
-    "ts/declarations.d.ts"
+    "src/declarations.d.ts"
   ]
 }

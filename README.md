@@ -103,7 +103,7 @@ import {IRequestOptions, IServerResponse, ApiAiConstants} from "api-ai-javascrip
 const lang = ApiAiConstants.AVAILABLE_LANGUAGES.EN;
 ```
 
-You can find full list of interfaces [here](ts/Interfaces.ts)
+You can find full list of interfaces [here](src/Interfaces.ts)
 
 # Development
 
