@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "rimraf dist && webpack && tsc -p ./tsconfig.es6.json"
+    "build": "rimraf dist && webpack && tsc"
   },
   "files": [
     "dist"
