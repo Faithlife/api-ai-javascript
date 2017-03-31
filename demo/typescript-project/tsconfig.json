@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "target": "ES5",
-    "moduleResolution": "node",
-    "typeRoots": ["./node_modules/@types"]
-  }
-}
