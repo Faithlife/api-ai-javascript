@@ -1,6 +1,8 @@
 {
   "extends": "tslint:latest",
   "rules": {
+    "indent": [ true, "tabs" ],
+    "quotemark": [ true, "single", "jsx-double", "avoid-escape" ],
     "max-classes-per-file": 0,
     "object-literal-sort-keys": false,
     "no-namespace": false,

@@ -1,12 +1,12 @@
 interface Navigator {
-    Resampler: any;
-    webkitGetUserMedia: any;
-    mozGetUserMedia: any;
+	Resampler: any;
+	webkitGetUserMedia: any;
+	mozGetUserMedia: any;
 }
 interface AudioContext {
-    createResampleProcessor: Function;
-    createEndOfSpeechProcessor: Function;
+	createResampleProcessor: Function;
+	createEndOfSpeechProcessor: Function;
 }
 interface Window {
-    webkitURL: any;
+	webkitURL: any;
 }

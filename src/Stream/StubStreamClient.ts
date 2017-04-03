@@ -1,6 +1,7 @@
-import {ApiAiClientConfigurationError} from "../Errors";
+import { ApiAiClientConfigurationError } from '../Errors';
+
 export default class StubStreamClient {
-    constructor(options = {}) {
-        throw new ApiAiClientConfigurationError("You are using SDK version without built-in stream support");
-    }
+	constructor(options = {}) {
+		throw new ApiAiClientConfigurationError('You are using SDK version without built-in stream support');
+	}
 }

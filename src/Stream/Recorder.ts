@@ -1,91 +1,107 @@
-import Resampler from "./Resampler";
-import RecorderWorker from "./RecorderWorker";
+import RecorderWorker from './RecorderWorker';
+import Resampler from './Resampler';
+
 export default class Recorder {
-    context; node; configure; record; stop; clear; getBuffer; export16kMono;
+	private config;
+	private context;
+	private currCallback;
+	private node;
+	private recording;
+	private worker;
 
-    constructor(source, config: {bufferLen?, callback?, type?} = {}) {
-        var bufferLen = config.bufferLen || 4096;
-        this.context = source.context;
-        this.node = this.context.createScriptProcessor(bufferLen, 1, 1);
-        var worker = new Worker(this._getRecorderWorkerUrl());
-        worker.postMessage({
-            command: 'init',
-            config: {
-                sampleRate: this.context.sampleRate,
-                resamplerInitializerBody: this._getFunctionBody(Resampler)
-            }
-        });
-        var recording = false,
-            currCallback;
+	constructor(source, config: { bufferLen?, callback?, type? } = {}) {
+		const bufferLen = config.bufferLen || 4096;
+		this.context = source.context;
+		this.config = config;
+		this.node = this.context.createScriptProcessor(bufferLen, 1, 1);
 
-        this.node.onaudioprocess = function (e) {
-            if (!recording) return;
-            worker.postMessage({
-                command: 'record',
-                buffer: [
-                    e.inputBuffer.getChannelData(0)
-                ]
-            });
-        };
+		const worker = new Worker(this.getRecorderWorkerUrl());
+		this.worker = worker;
 
-        this.configure = function (cfg) {
-            for (var prop in cfg) {
-                if (cfg.hasOwnProperty(prop)) {
-                    config[prop] = cfg[prop];
-                }
-            }
-        };
+		worker.postMessage({
+			command: 'init',
+			config: {
+				sampleRate: this.context.sampleRate,
+				resamplerInitializerBody: this.getFunctionBody(Resampler)
+			}
+		});
 
-        this.record = function () {
-            recording = true;
-        };
+		this.node.onaudioprocess = (e) => {
+			if (!this.recording) {
+				return;
+			}
 
-        this.stop = function () {
-            recording = false;
-        };
+			worker.postMessage({
+				command: 'record',
+				buffer: [
+					e.inputBuffer.getChannelData(0)
+				]
+			});
+		};
 
-        this.clear = function () {
-            worker.postMessage({command: 'clear'});
-        };
+		worker.onmessage = (e) => {
+			this.currCallback(e.data);
+		};
 
-        this.getBuffer = function (cb) {
-            currCallback = cb || config.callback;
-            worker.postMessage({command: 'getBuffer'})
-        };
+		source.connect(this.node);
+		this.node.connect(this.context.destination);
+	}
 
-        this.export16kMono = function (cb, type) {
-            currCallback = cb || config.callback;
-            type = type || config.type || 'audio/raw';
-            if (!currCallback) throw new Error('Callback not set');
-            worker.postMessage({
-                command: 'export16kMono',
-                type: type
-            });
-        };
+	public configure(cfg) {
+		for (const prop in cfg) {
+			if (cfg.hasOwnProperty(prop)) {
+				this.config[prop] = cfg[prop];
+			}
+		}
+	}
 
-        worker.onmessage = function (e) {
-            currCallback(e.data);
-        };
+	public record() {
+		this.recording = true;
+	}
 
-        source.connect(this.node);
-        this.node.connect(this.context.destination);
+	public stop() {
+		this.recording = false;
+	}
 
-    }
+	public clear() {
+		this.worker.postMessage({command: 'clear'});
+	}
 
+	public getBuffer(cb) {
+		this.currCallback = cb || this.config.callback;
+		this.worker.postMessage({command: 'getBuffer'});
+	}
 
-    _getRecorderWorkerUrl() {
-        var getBlobUrl = window.URL && URL.createObjectURL.bind(URL);
-        return getBlobUrl(new Blob([this._getFunctionBody(RecorderWorker.createRecorderWorker())], {type: 'text/javascript'}));
-    }
+	public export16kMono(cb, type) {
+		this.currCallback = cb || this.config.callback;
+		type = type || this.config.type || 'audio/raw';
+		if (!this.currCallback) {
+			throw new Error('Callback not set');
+		}
 
-    _getFunctionBody(fn) {
-        if (typeof fn !== 'function') {
-            throw new Error("Illegal argument exception: argument is not a funtion: " + fn);
-        }
-        var fnStr = fn.toString(),
-            start = fnStr.indexOf('{'),
-            fin = fnStr.lastIndexOf('}');
+		this.worker.postMessage({
+			command: 'export16kMono',
+			type,
+		});
+	}
 
-        return (start > 0 && fin > 0) ? fnStr.substring(start + 1, fin) : fnStr;
-    }
+	private getRecorderWorkerUrl() {
+		const getBlobUrl = window.URL && URL.createObjectURL.bind(URL);
+		return getBlobUrl(new Blob(
+			[ this.getFunctionBody(RecorderWorker.createRecorderWorker())],
+			{ type: 'text/javascript' }
+		));
+	}
+
+	private getFunctionBody(fn) {
+		if (typeof fn !== 'function') {
+			throw new Error('Illegal argument exception: argument is not a funtion: ' + fn);
+		}
+
+		const fnStr = fn.toString();
+		const start = fnStr.indexOf('{');
+		const fin = fnStr.lastIndexOf('}');
+
+		return (start > 0 && fin > 0) ? fnStr.substring(start + 1, fin) : fnStr;
+	}
 }

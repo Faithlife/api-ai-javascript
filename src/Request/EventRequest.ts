@@ -1,4 +1,4 @@
-import Request from "./Request";
+import Request from './Request';
 export class EventRequest extends Request {
 
 }

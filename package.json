@@ -20,7 +20,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "rimraf dist && webpack && tsc"
+    "lint": "tslint src/**/*",
+    "build": "rimraf dist && yarn lint && webpack && tsc"
   },
   "files": [
     "dist"
