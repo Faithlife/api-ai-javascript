@@ -1,12 +1,5 @@
 import { ApiAiConstants } from './ApiAiConstants';
 
-export interface IRequestOptions {
-	query?: string;
-	event?: {name: string, data?: IStringMap};
-	sessionId?: string;
-	lang?: ApiAiConstants.AVAILABLE_LANGUAGES;
-}
-
 export interface IServerResponse {
 	id?: string;
 	result?: {

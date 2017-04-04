@@ -11,7 +11,7 @@ class XhrRequest {
 	public static ajax(
 		method: XhrRequest.Method,
 		url: string,
-		args: IStringMap = null,
+		args: any = null,
 		headers: IStringMap = null,
 		options: IStringMap = {}
 	): Promise<any> {

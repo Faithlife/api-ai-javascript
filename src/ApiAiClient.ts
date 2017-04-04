@@ -1,16 +1,18 @@
 import { ApiAiConstants } from './ApiAiConstants';
 import { ApiAiClientConfigurationError } from './Errors';
-import { EventRequest } from './Request/EventRequest';
-import TextRequest from './Request/TextRequest';
-import { TTSRequest } from './Request/TTSRequest';
+import { QueryRequestFactory } from './Routes/Query';
+import { UserEntitiesRequestFactory } from './Routes/UserEntities';
 
-import { IApiClientOptions, IRequestOptions, IServerResponse, IStreamClient, IStreamClientConstructor,
+import { IApiClientOptions, IServerResponse, IStreamClient, IStreamClientConstructor,
 	IStreamClientOptions, IStringMap } from './Interfaces';
 
 export * from './Interfaces';
-export {ApiAiConstants} from './ApiAiConstants';
+export { ApiAiConstants } from './ApiAiConstants';
 
 export class ApiAiClient {
+
+	public query: QueryRequestFactory;
+	public userEntities: UserEntitiesRequestFactory;
 
 	private apiLang: ApiAiConstants.AVAILABLE_LANGUAGES;
 	private apiVersion: string;
@@ -20,7 +22,6 @@ export class ApiAiClient {
 	private streamClientClass: IStreamClientConstructor;
 
 	constructor(options: IApiClientOptions) {
-
 		if (!options || !options.accessToken) {
 			throw new ApiAiClientConfigurationError('Access token is required for new ApiAi.Client instance');
 		}
@@ -32,30 +33,12 @@ export class ApiAiClient {
 		this.sessionId = options.sessionId || this.guid();
 		this.streamClientClass = options.streamClientClass || null;
 
-	}
+		const headers = {
+			Authorization: `Bearer ${this.accessToken}`,
+		};
 
-	public textRequest(query, options: IRequestOptions = {}): Promise<IServerResponse> {
-		if (!query) {
-			throw new ApiAiClientConfigurationError('Query should not be empty');
-		}
-		options.query = query;
-		return new TextRequest(this, options).perform();
-	}
-
-	public eventRequest(eventName, eventData: IStringMap = {},
-						options: IRequestOptions = {}): Promise<IServerResponse> {
-		if (!eventName) {
-			throw new ApiAiClientConfigurationError('Event name can not be empty');
-		}
-		options.event = {name: eventName, data: eventData};
-		return new EventRequest(this, options).perform();
-	}
-
-	public ttsRequest(query) {
-		if (!query) {
-			throw new ApiAiClientConfigurationError('Query should not be empty');
-		}
-		return new TTSRequest(this).makeTTSRequest(query);
+		this.query = new QueryRequestFactory(this.apiBaseUrl, this.apiVersion, { sessionId: this.sessionId, lang: this.apiLang }, headers);
+		this.userEntities = new UserEntitiesRequestFactory(this.apiBaseUrl, this.apiVersion, this.sessionId, headers);
 	}
 
 	public createStreamClient(streamClientOptions: IStreamClientOptions = {}): IStreamClient {

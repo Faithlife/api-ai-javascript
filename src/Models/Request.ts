@@ -1,6 +1,5 @@
-import { ApiAiClient } from '../ApiAiClient';
 import { ApiAiRequestError } from '../Errors';
-import { IRequestOptions, IServerResponse, IStringMap } from '../Interfaces';
+import { IServerResponse, IStringMap } from '../Interfaces';
 import XhrRequest from '../XhrRequest';
 
 abstract class Request {
@@ -25,24 +24,16 @@ abstract class Request {
 		return Promise.reject<ApiAiRequestError>(error);
 	}
 
-	protected uri;
-	protected requestMethod;
-	protected headers;
-
-	constructor(protected apiAiClient: ApiAiClient, protected options: IRequestOptions) {
-		this.uri = this.apiAiClient.getApiBaseUrl() + 'query?v=' + this.apiAiClient.getApiVersion();
-		this.requestMethod = XhrRequest.Method.POST;
-		this.headers = {
-			Authorization: 'Bearer ' + this.apiAiClient.getAccessToken(),
-		};
-
-		this.options.lang = this.apiAiClient.getApiLang();
-		this.options.sessionId = this.apiAiClient.getSessionId();
+	protected constructor(
+		private readonly uri: string,
+		private readonly method: XhrRequest.Method,
+		protected payload: any, protected headers: IStringMap,
+		protected options: IStringMap = {}) {
 	}
 
-	public perform(overrideOptions = null): Promise<IServerResponse> {
-		const options = overrideOptions ? overrideOptions : this.options;
-		return XhrRequest.ajax(this.requestMethod, this.uri, options as IStringMap, this.headers)
+	public perform(): Promise<IServerResponse> {
+		const { uri, method, headers, payload, options } = this;
+		return XhrRequest.ajax(method, uri, payload, headers, options)
 			.then(Request.handleSuccess.bind(this))
 			.catch(Request.handleError.bind(this));
 	}
