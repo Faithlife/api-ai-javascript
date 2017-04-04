@@ -1,6 +1,6 @@
 {
   "name": "@faithlife/api-ai",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Faithlife's modified Javascript SDK for https://api.ai/",
   "main": "dist/index.js",
   "devDependencies": {
