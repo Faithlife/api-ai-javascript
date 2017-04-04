@@ -1,6 +1,7 @@
 import { ApiAiConstants } from './ApiAiConstants';
 import { ApiAiClientConfigurationError } from './Errors';
 import { QueryRequestFactory } from './Routes/Query';
+import { ContextsRequestFactory } from './Routes/Contexts';
 import { UserEntitiesRequestFactory } from './Routes/UserEntities';
 
 import { IApiClientOptions, IServerResponse, IStreamClient, IStreamClientConstructor,
@@ -13,6 +14,7 @@ export class ApiAiClient {
 
 	public query: QueryRequestFactory;
 	public userEntities: UserEntitiesRequestFactory;
+	public contexts: ContextsRequestFactory;
 
 	private apiLang: ApiAiConstants.AVAILABLE_LANGUAGES;
 	private apiVersion: string;
@@ -39,6 +41,7 @@ export class ApiAiClient {
 
 		this.query = new QueryRequestFactory(this.apiBaseUrl, this.apiVersion, { sessionId: this.sessionId, lang: this.apiLang }, headers);
 		this.userEntities = new UserEntitiesRequestFactory(this.apiBaseUrl, this.apiVersion, this.sessionId, headers);
+		this.contexts = new ContextsRequestFactory(this.apiBaseUrl, this.apiVersion, this.sessionId, headers);
 	}
 
 	public createStreamClient(streamClientOptions: IStreamClientOptions = {}): IStreamClient {
