@@ -1,5 +1,5 @@
 import { ApiAiRequestError } from '../Errors';
-import { IServerResponse, IStringMap } from '../Interfaces';
+import { ICancellationToken, IServerResponse, IStringMap } from '../Interfaces';
 import XhrRequest from '../XhrRequest';
 
 abstract class Request {
@@ -31,9 +31,9 @@ abstract class Request {
 		protected options: IStringMap = {}) {
 	}
 
-	public perform(): Promise<IServerResponse> {
+	public perform(token: ICancellationToken = null): Promise<IServerResponse> {
 		const { uri, method, headers, payload, options } = this;
-		return XhrRequest.ajax(method, uri, payload, headers, options)
+		return XhrRequest.ajax(method, uri, payload, headers, options, token)
 			.then(Request.handleSuccess.bind(this))
 			.catch(Request.handleError.bind(this));
 	}

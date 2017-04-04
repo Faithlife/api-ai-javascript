@@ -1,5 +1,10 @@
 import { ApiAiConstants } from './ApiAiConstants';
 
+export interface ICancellationToken {
+	isCancellationRequested: Function;
+	register: Function;
+}
+
 export interface IServerResponse {
 	id?: string;
 	result?: {

@@ -1,4 +1,4 @@
-import { IServerResponse, IStringMap } from '../Interfaces';
+import { ICancellationToken, IServerResponse, IStringMap } from '../Interfaces';
 import { IEntity } from '../Models/Entity';
 import Request from '../Models/Request';
 import XhrRequest from '../XhrRequest';
@@ -38,23 +38,27 @@ export class UserEntitiesRequestFactory {
 		this.baseUri = `${apiBaseUri}/userEntities`;
 	}
 
-	public create(entities: IEntity[]): Promise<IServerResponse> {
+	public create(entities: IEntity[], token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${baseUri}?v=${apiVersion}`;
 		const payload: IUserEntitiesCreatePayload = {
 			sessionId,
 			entities,
 		};
-		return new UserEntitiesRequest(uri, XhrRequest.Method.POST, payload, headers).perform();
+		return new UserEntitiesRequest(uri, XhrRequest.Method.POST, payload, headers).perform(token);
 	}
 
-	public get(name: string): Promise<IServerResponse> {
+	public get(name: string, token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${baseUri}/${name}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new UserEntitiesRequest(uri, XhrRequest.Method.GET, null, headers).perform();
+		return new UserEntitiesRequest(uri, XhrRequest.Method.GET, null, headers).perform(token);
 	}
 
-	public update(name: string, entries: IEntity.IEntry[], extend: boolean = false): Promise<IServerResponse> {
+	public update(
+		name: string,
+		entries: IEntity.IEntry[],
+		extend: boolean = false,
+		token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${this.baseUri}/${name}?v=${apiVersion}`;
 		const payload: IUserEntitiesUpdatePayload = {
@@ -63,12 +67,12 @@ export class UserEntitiesRequestFactory {
 			extend,
 			entries,
 		};
-		return new UserEntitiesRequest(uri, XhrRequest.Method.PUT, payload, headers).perform();
+		return new UserEntitiesRequest(uri, XhrRequest.Method.PUT, payload, headers).perform(token);
 	}
 
-	public delete(name: string): Promise<IServerResponse> {
+	public delete(name: string, token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${this.baseUri}/${name}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new UserEntitiesRequest(uri, XhrRequest.Method.DELETE, null, headers).perform();
+		return new UserEntitiesRequest(uri, XhrRequest.Method.DELETE, null, headers).perform(token);
 	}
 }

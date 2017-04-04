@@ -1,4 +1,4 @@
-import { IServerResponse, IStringMap } from '../Interfaces';
+import { ICancellationToken, IServerResponse, IStringMap } from '../Interfaces';
 import Request from '../Models/Request';
 import XhrRequest from '../XhrRequest';
 
@@ -34,33 +34,33 @@ export class ContextsRequestFactory {
 		this.baseUri = `${apiBaseUri}/contexts`;
 	}
 
-	public all(): Promise<IServerResponse> {
+	public all(token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${baseUri}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new ContextsRequest(uri, XhrRequest.Method.GET, null, headers).perform();
+		return new ContextsRequest(uri, XhrRequest.Method.GET, null, headers).perform(token);
 	}
 
-	public get(name: string): Promise<IServerResponse> {
+	public get(name: string, token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${baseUri}/${name}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new ContextsRequest(uri, XhrRequest.Method.GET, null, headers).perform();
+		return new ContextsRequest(uri, XhrRequest.Method.GET, null, headers).perform(token);
 	}
 
-	public post(contexts: IContext[]): Promise<IServerResponse> {
+	public post(contexts: IContext[], token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${baseUri}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new ContextsRequest(uri, XhrRequest.Method.POST, contexts, headers).perform();
+		return new ContextsRequest(uri, XhrRequest.Method.POST, contexts, headers).perform(token);
 	}
 
-	public delete(name: string): Promise<IServerResponse> {
+	public delete(name: string, token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${this.baseUri}/${name}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new ContextsRequest(uri, XhrRequest.Method.DELETE, null, headers).perform();
+		return new ContextsRequest(uri, XhrRequest.Method.DELETE, null, headers).perform(token);
 	}
 
-	public deleteAll(): Promise<IServerResponse> {
+	public deleteAll(token: ICancellationToken = null): Promise<IServerResponse> {
 		const { apiVersion, sessionId, baseUri, headers } = this;
 		const uri = `${this.baseUri}?v=${apiVersion}&sessionId=${sessionId}`;
-		return new ContextsRequest(uri, XhrRequest.Method.DELETE, null, headers).perform();
+		return new ContextsRequest(uri, XhrRequest.Method.DELETE, null, headers).perform(token);
 	}
 }

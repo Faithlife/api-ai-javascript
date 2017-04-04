@@ -1,4 +1,4 @@
-import { IStringMap } from './Interfaces';
+import { ICancellationToken, IStringMap } from './Interfaces';
 /**
  * quick ts implementation of example from
  * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -13,7 +13,8 @@ class XhrRequest {
 		url: string,
 		args: any = null,
 		headers: IStringMap = null,
-		options: IStringMap = {}
+		options: IStringMap = {},
+		token: ICancellationToken = null
 	): Promise<any> {
 
 		// Creating a promise
@@ -74,9 +75,17 @@ class XhrRequest {
 					reject(client);
 				}
 			};
+
 			client.onerror = () => {
 				reject(client);
 			};
+
+			if (token) {
+				token.register(() => {
+					client.abort();
+					reject(client);
+				});
+			}
 		});
 
 	}

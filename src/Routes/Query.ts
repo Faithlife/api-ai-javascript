@@ -1,6 +1,6 @@
 import { ApiAiConstants } from '../ApiAiConstants';
 import { ApiAiRequestError } from '../Errors';
-import { IServerResponse, IStringMap } from '../Interfaces';
+import { ICancellationToken, IServerResponse, IStringMap } from '../Interfaces';
 import { IEntity } from '../Models/Entity';
 import Request from '../Models/Request';
 import XhrRequest from '../XhrRequest';
@@ -68,7 +68,7 @@ export class QueryRequestFactory {
 		this.uri = `${apiBaseUri}/query?v=${apiVersion}`;
 	}
 
-	public text(dto: IQueryTextRequestDto): Promise<IServerResponse> {
+	public text(dto: IQueryTextRequestDto, token: ICancellationToken = null): Promise<IServerResponse> {
 		if (!dto || !dto.query || !dto.query.length) {
 			throw new ApiAiRequestError('Query should not be empty');
 		}
@@ -77,10 +77,10 @@ export class QueryRequestFactory {
 			...basePayload,
 			...dto,
 		};
-		return new QueryRequest(uri, payload, headers).perform();
+		return new QueryRequest(uri, payload, headers).perform(token);
 	}
 
-	public event(dto: IQueryEventRequestDto): Promise<IServerResponse> {
+	public event(dto: IQueryEventRequestDto, token: ICancellationToken = null): Promise<IServerResponse> {
 		if (!dto || !dto.event || !dto.event.name || !dto.event.name.length) {
 			throw new ApiAiRequestError('Event name can not be empty');
 		}
@@ -89,6 +89,6 @@ export class QueryRequestFactory {
 			...basePayload,
 			...dto,
 		};
-		return new QueryRequest(uri, payload, headers).perform();
+		return new QueryRequest(uri, payload, headers).perform(token);
 	}
 }
